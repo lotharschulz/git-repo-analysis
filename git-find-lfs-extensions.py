@@ -34,25 +34,6 @@ COLUMN_WIDHT = 60
 cwd = os.getcwd()
 result = {}
 
-def is_binary(filename):
-    """Return true if the given filename is binary.
-    @raise EnvironmentError: if the file does not exist or cannot be accessed.
-    @attention: found @ http://bytes.com/topic/python/answers/21222-determine-file-type-binary-text on 6/08/2010
-    @author: Trent Mick <TrentM@ActiveState.com>
-    @author: Jorge Orpinel <jorge@orpinel.com>"""
-    fin = open(filename, 'rb')
-    try:
-        CHUNKSIZE = 1024
-        while 1:
-            chunk = fin.read(CHUNKSIZE)
-            if '\0' in chunk: # found null byte
-                return True
-            if len(chunk) < CHUNKSIZE:
-                break # done
-    finally:
-        fin.close()
-    return False
-
 def add_file(ext, size_mb):
     if ext not in result:
         result[ext] = { 'count_large' : 0, 'size_large' : 0, 'count_all' : 0, 'size_all' : 0 }
@@ -67,7 +48,7 @@ def add_file(ext, size_mb):
         result[ext]['min'] = size_mb
 
 def print_line(ext, share_large, count_large, count_all, size_all, min, max):
-    print '{}{}{}{}{}{}{}'.format(
+    print ('{}{}{}{}{}{}{}'.format(
         ext.ljust(COLUMN_WIDHT),
         str(share_large).rjust(10),
         str(count_large).rjust(10),
@@ -75,26 +56,26 @@ def print_line(ext, share_large, count_large, count_all, size_all, min, max):
         str(size_all).rjust(10),
         str(min).rjust(10),
         str(max).rjust(10)
-    )
+    ))
 
-for root, dirs, files in os.walk(cwd):
+for root, dirs, files in os.walk(os.getcwd()):
     for basename in files:
         filename = os.path.join(root, basename)
         try:
             size_mb = float(os.path.getsize(filename)) / 1024 / 1024
             if not filename.startswith(os.path.join(cwd, '.git')) and size_mb > 0:
-                if is_binary(filename):
-                    file_type = "bin"
-                else:
-                    file_type = "txt"
                 ext = filename
                 add_file('**  all  **', size_mb)
                 while ext.find('.') >= 0:
                     ext = ext[ext.find('.')+1:]
                     if ext.find('.') <= 0:
-                        add_file(file_type + "  -  " + ext, size_mb)
-        except Exception, e:
-            print e
+                        add_file(ext, size_mb)
+                noExtFile = filename
+                if noExtFile.find('.') == -1:
+                    print(filename + " - noExtFile.find('.'): " + str(noExtFile.find('.')) + "\n")
+                    add_file("no ext" , size_mb)
+        except Exception as e:
+            print (e)
 
 print_line('Extension', 'LShare', 'LCount', 'Count', 'Size', 'Min', 'Max')
 print_line('-------','-------','-------','-------','-------','-------','-------')
@@ -104,7 +85,7 @@ for ext in sorted(result.keys(), key=lambda x: result[x]['size_large'], reverse=
         large_share = 100*result[ext]['count_large']/result[ext]['count_all']
         print_line(
             ext,
-            str(large_share) + ' %',
+            str(large_share) + ' %' if int(large_share) == large_share else '~ ' + str(round(large_share,2)) + ' %',
             result[ext]['count_large'],
             result[ext]['count_all'],
             int(result[ext]['size_all']),
