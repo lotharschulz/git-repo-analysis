@@ -58,7 +58,7 @@ def print_line(ext, share_large, count_large, count_all, size_all, min, max):
         str(max).rjust(10)
     ))
 
-for root, dirs, files in os.walk(os.getcwd()):
+for root, dirs, files in os.walk(cwd):
     for basename in files:
         filename = os.path.join(root, basename)
         try:
