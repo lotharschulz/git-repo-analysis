@@ -70,9 +70,8 @@ for root, dirs, files in os.walk(cwd):
                     ext = ext[ext.find('.')+1:]
                     if ext.find('.') <= 0:
                         add_file(ext, size_mb)
-                noExtFile = filename
-                if noExtFile.find('.') == -1:
-                    print(filename + " - noExtFile.find('.'): " + str(noExtFile.find('.')) + "\n")
+                # files w/o extension
+                if filename.find('.') == -1:
                     add_file("no ext" , size_mb)
         except Exception as e:
             print (e)
