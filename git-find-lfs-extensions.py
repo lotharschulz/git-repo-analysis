@@ -79,7 +79,6 @@ for root, dirs, files in os.walk(cwd):
                     file_type = "txt"
                 else:
                     file_type = "bin"
-                print("filename: " + filename + " - filetype: " + file_type)
                 ext = filename
                 add_file('**  all  **', size_mb)
                 while ext.find('.') >= 0:
