@@ -34,6 +34,17 @@ COLUMN_WIDHT = 60
 cwd = os.getcwd()
 result = {}
 
+def is_text(filename):
+    """ Return true if file represented by filename is text
+    @attention: inspired by http://stackoverflow.com/a/30273352 on 2017 01 05"""
+    try:
+        with open(filename, "r") as f:
+            for l in f:
+                l += " "
+    except UnicodeDecodeError:
+        return False
+    return True
+
 def add_file(ext, size_mb):
     if ext not in result:
         result[ext] = { 'count_large' : 0, 'size_large' : 0, 'count_all' : 0, 'size_all' : 0 }
@@ -64,15 +75,20 @@ for root, dirs, files in os.walk(cwd):
         try:
             size_mb = float(os.path.getsize(filename)) / 1024 / 1024
             if not filename.startswith(os.path.join(cwd, '.git')) and size_mb > 0:
+                if is_text(filename):
+                    file_type = "txt"
+                else:
+                    file_type = "bin"
+                print("filename: " + filename + " - filetype: " + file_type)
                 ext = filename
                 add_file('**  all  **', size_mb)
                 while ext.find('.') >= 0:
                     ext = ext[ext.find('.')+1:]
                     if ext.find('.') <= 0:
-                        add_file(ext, size_mb)
+                        add_file(file_type + "  -  " + ext, size_mb)
                 # files w/o extension
                 if filename.find('.') == -1:
-                    add_file("no ext" , size_mb)
+                    add_file(file_type + "  - no ext" , size_mb)
         except Exception as e:
             print (e)
 
