@@ -34,6 +34,7 @@ COLUMN_WIDHT = 60
 cwd = os.getcwd()
 result = {}
 
+
 def is_text(filename):
     """ Return true if file represented by filename is text
     @attention: inspired by http://stackoverflow.com/a/30273352 on 2017 01 05"""
@@ -44,6 +45,7 @@ def is_text(filename):
     except UnicodeDecodeError:
         return False
     return True
+
 
 def add_file(ext, size_mb):
     if ext not in result:
@@ -57,6 +59,7 @@ def add_file(ext, size_mb):
         result[ext]['max'] = size_mb
     if not 'min' in result[ext] or size_mb < result[ext]['min']:
         result[ext]['min'] = size_mb
+
 
 def print_line(ext, share_large, count_large, count_all, size_all, min, max):
     print ('{}{}{}{}{}{}{}'.format(
@@ -89,7 +92,7 @@ for root, dirs, files in os.walk(cwd):
                 if filename.find('.') == -1:
                     add_file(file_type + "  - no ext" , size_mb)
         except Exception as e:
-            print (e)
+            print(e)
 
 print_line('Extension', 'LShare', 'LCount', 'Count', 'Size', 'Min', 'Max')
 print_line('-------','-------','-------','-------','-------','-------','-------')
