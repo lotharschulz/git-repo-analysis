@@ -34,15 +34,41 @@ COLUMN_WIDHT = 60
 cwd = os.getcwd()
 result = {}
 
+
+# def is_text(filename):
+#     """
+#     Return true if file represented by filename is text
+#     @attention: inspired by http://stackoverflow.com/a/30273352 on 2017 01 05
+#     """
+#     try:
+#         with open(filename, "r") as f:
+#             for l in f:
+#                 l += " "
+#     except UnicodeDecodeError:
+#         return False
+#     return True
+
+
 def is_text(filename):
-    """ Return true if file represented by filename is text
-    @attention: inspired by http://stackoverflow.com/a/30273352 on 2017 01 05"""
+    """Return true if the given filename is binary.
+    @raise EnvironmentError: if the file does not exist or cannot be accessed.
+    @attention: found @ http://bytes.com/topic/python/answers/21222-determine-file-type-binary-text on 6/08/2010
+    @attention: found @ http://stackoverflow.com/questions/898669/how-can-i-detect-if-a-file-is-binary-non-text-in-python/3002505#3002505 on 17/01/2017
+    @author: Trent Mick <TrentM@ActiveState.com>
+    @author: Jorge Orpinel <jorge@orpinel.com>"""
+    fin = open(filename, 'rb')
     try:
-        with open(filename, "r") as f:
-            for l in f:
-                l += " "
-    except UnicodeDecodeError:
-        return False
+        chunksize = 1024
+        while 1:
+            chunk = fin.read(chunksize)
+            if '\0' in chunk: # found null byte
+                return False
+            if len(chunk) < chunksize:
+                break # done
+    # A-wooo! Mira, python no necesita el "except:". Achis... Que listo es.
+    finally:
+        fin.close()
+
     return True
 
 def add_file(ext, size_mb):
