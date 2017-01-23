@@ -1,3 +1,9 @@
+forked for https://github.com/larsxschneider/git-repo-analysis/pull/1 contribution
+
+original readme:
+
+---
+
 # Git Repo Analysis Tools
 
 Git can become slow if a repository exceeds certain thresholds ([read this for details](http://larsxschneider.github.io/2016/09/21/large-git-repos)). Use the scripts explained below to identify possible culprits in a repository. The scripts have been tested on macOS but they should run on Linux as is.
